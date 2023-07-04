@@ -14,6 +14,7 @@ namespace golts
 {
     public abstract class WorldObject
     {
+        public bool GravityAffected { get; protected set; }
         public double Weight { get; protected set; }
 
         public double MovementX { get; protected set; }
@@ -24,7 +25,9 @@ namespace golts
         public DynamicTexture Texture { get; protected set; }
         public float DrawingDepth=0.0f;
 
-        public WorldObject(ContentManager contentManager, double x, double y, double movementx, double movementy, double weight, string textureName)
+        public WorldObject(ContentManager contentManager, 
+            double x, double y, double movementx, double movementy, double weight, bool gravityAffected, 
+            string textureName)
         {
             X = x;
             Y = y;
@@ -33,6 +36,7 @@ namespace golts
             MovementY = movementy;
 
             Weight = weight;
+            GravityAffected = gravityAffected;
 
             Texture = new DynamicTexture(contentManager, textureName);
         }

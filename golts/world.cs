@@ -25,6 +25,8 @@ namespace golts
         //why not
         public WorldObject Camera { get; private set; }
 
+        private bool HitboxesShown = true;
+
         public World(ContentManager contentManager, string path)
         {
             objects = new ObjectList(MaxLoadedSize);
@@ -47,7 +49,19 @@ namespace golts
             foreach(var currentObject in objects.objects)
             {
                 currentObject.Draw((int)currentObject.X, (int)currentObject.Y, spriteBatch, 0f, 4f, Color.White);
+
+                if (HitboxesShown && currentObject is PhysicalObject)
+                    ((PhysicalObject)currentObject).Hitbox.Draw((int)currentObject.X, (int)currentObject.Y, 
+                        spriteBatch, 0f, Color.White);
             }
+
+            for (int i = 0; i <= 1920; i += ObjectList.GridCellSize)
+                spriteBatch.Draw(Game1.OnePixel, new Vector2(i, 0), null, Color.Yellow, 0f, new Vector2(0, 0),
+                    new Vector2(1, 1080), SpriteEffects.None, 1f);
+
+            for (int i = 0; i <= 1080; i += ObjectList.GridCellSize)
+                spriteBatch.Draw(Game1.OnePixel, new Vector2(0, i), null, Color.Yellow, 0f, new Vector2(0, 0),
+                    new Vector2(1920, 1), SpriteEffects.None, 1f);
         }
     }
 }

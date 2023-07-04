@@ -12,23 +12,17 @@ using Newtonsoft.Json;
 
 namespace golts
 {
-    public class TestClass:WorldObject
+    public class TestClass:PhysicalObject
     {
-        public TestClass(ContentManager contentManager, double x, double y):base(contentManager, x, y, 0, 0, 4, "testing1")
+        public TestClass(ContentManager contentManager, double x, double y):base(contentManager, x, y, 0, 0, 4, false,
+            "testing1", @"boxes\testing10")
         {}
     }
 
     public class TestClass2 : PhysicalObject
     {
-        public TestClass2(ContentManager contentManager, double x, double y) : base(contentManager, x, y, 0, 0, 4, "testing2", 
-            new List<Tuple<double, double>>
-            {
-                new Tuple<double, double>(0, 56),
-                new Tuple<double, double>(61, 0),
-                new Tuple<double, double>(175, 35),
-                new Tuple<double, double>(130, 152),
-                new Tuple<double, double>(0, 131),
-            })
+        public TestClass2(ContentManager contentManager, double x, double y) : base(contentManager, x, y, 0, 0, 4, false,
+            "testing2", @"boxes\testing20")
         { }
 
         public override void Update(ContentManager contentManager, World world)

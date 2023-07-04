@@ -64,7 +64,7 @@ namespace golts
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.PaleGoldenrod);
+            GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
             world.Draw(_spriteBatch);
@@ -91,12 +91,12 @@ namespace golts
 
         public static double GetDirection(double x1, double y1, double x2, double y2)
         {
-            return Math.Atan2(y1-y2, x1 - y2);
+            return Math.Atan2(y1-y2, x1 - x2);
         }
 
         public static double GetDirection(Tuple<double, double> t1, Tuple<double, double> t2)
         {
-            return (float)Math.Atan2(t1.Item2-t2.Item2, t1.Item1-t2.Item2);
+            return (float)Math.Atan2(t1.Item2-t2.Item2, t1.Item1-t2.Item1);
         }
 
         public static Tuple<double, double> DirectionToTuple(float direction)
