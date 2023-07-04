@@ -21,7 +21,7 @@ namespace golts
 
     public class TestClass2 : PhysicalObject
     {
-        public TestClass2(ContentManager contentManager, double x, double y) : base(contentManager, x, y, 0, 0, 4, false,
+        public TestClass2(ContentManager contentManager, double x, double y) : base(contentManager, x, y, 0, 0, 4, true,
             "testing2", @"boxes\testing20")
         { }
 
@@ -29,16 +29,19 @@ namespace golts
         {
             var ks = Keyboard.GetState();
 
-            if (ks.IsKeyDown(Keys.W))
-                ChangeMovement(0, -5);
+            // if (ks.IsKeyDown(Keys.W))
+            //    ChangeMovement(0, -5);
 
-            if (ks.IsKeyDown(Keys.S))
-                ChangeMovement(0, 5);
+            //if (ks.IsKeyDown(Keys.S))
+            //  ChangeMovement(0, 5);
 
-            if (ks.IsKeyDown(Keys.A))
+            if (ks.IsKeyDown(Keys.Z) && CollidedY)
+                ChangeMovement(0, -500);
+
+            if (ks.IsKeyDown(Keys.Left))
                 ChangeMovement(-5, 0);
 
-            if (ks.IsKeyDown(Keys.D))
+            if (ks.IsKeyDown(Keys.Right))
                 ChangeMovement(5, 0);
 
             base.Update(contentManager, world);

@@ -14,6 +14,8 @@ namespace golts
 {
     public abstract class WorldObject
     {
+        public const int StandartFallingSpeed = 10;
+
         public bool GravityAffected { get; protected set; }
         public double Weight { get; protected set; }
 
@@ -43,6 +45,9 @@ namespace golts
 
         public virtual void Update(ContentManager contentManager, World world)
         {
+            if (GravityAffected)
+                MovementY += StandartFallingSpeed;
+
             X += MovementX;
             Y += MovementY;
 

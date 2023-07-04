@@ -15,7 +15,11 @@ namespace golts
     //It's like WorldObject but it has hitbox and stuff
     public abstract class PhysicalObject:WorldObject
     {
-        public ObjectHitbox Hitbox { get; protected set; }    
+        protected int PrevFallingSpeed = StandartFallingSpeed;
+
+        public ObjectHitbox Hitbox { get; protected set; }
+
+        protected bool CollidedY = false, CollidedX = false;
 
         public PhysicalObject(ContentManager contentManager, 
             double x, double y, double movementx, double movementy, double weight, bool gravityAffected,
@@ -37,25 +41,69 @@ namespace golts
         {
             double px = X;
             double py = Y;
-            
-            base.Update(contentManager, world);
 
-            if (Math.Abs(px - X) > 0.0000001 || Math.Abs(py - Y) > 0.0000001)
+            if (GravityAffected)
+            {
+                if (!CollidedY)
+                {
+                    MovementY += StandartFallingSpeed;
+                    PrevFallingSpeed = StandartFallingSpeed;
+                }
+                else
+                {
+                    MovementY += PrevFallingSpeed;
+                    PrevFallingSpeed /= 2;
+                }
+            }
+
+            CollidedY = false;
+            CollidedX = false;
+
+            Y += MovementY;
+
+            world.objects.UpdateObjectPosition(this, px, py);
+
+            if (Math.Abs(py - Y) > 0.0000001)
             {
                 HashSet<PhysicalObject> relatedObjects = world.objects.GetNearbyObjects(this);
 
                 foreach (var currentObject in relatedObjects)
                     if (currentObject!=this&&Hitbox.CollidesWith(currentObject.Hitbox, X, Y, currentObject.X, currentObject.Y))
                     {
-                        X = px;
                         Y = py;
+                        MovementY /=2;
+                        CollidedY = true;
 
-                        //I'm sorry. 
+                        //I'm sorry.
+                        break;
+                    }
+            }
+
+            X += MovementX;
+
+            world.objects.UpdateObjectPosition(this, px, py);
+
+            if (Math.Abs(px - X) > 0.0000001)
+            {
+                HashSet<PhysicalObject> relatedObjects = world.objects.GetNearbyObjects(this);
+
+                foreach (var currentObject in relatedObjects)
+                    if (currentObject != this && Hitbox.CollidesWith(currentObject.Hitbox, X, Y, currentObject.X, currentObject.Y))
+                    {
+                        X = px;
+                        MovementX /=2;
+                        CollidedX = true;
+
+                        //I'm sorry. I copypasted this (I solemnly swear it was tested)
                         break;
                     }
             }
 
             world.objects.UpdateObjectPosition(this, px, py);
+
+            ChangeMovement(-MovementX, -MovementY);
+
+            Texture.Update(contentManager);
         }
     }
 }

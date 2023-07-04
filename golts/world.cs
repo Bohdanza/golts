@@ -31,7 +31,7 @@ namespace golts
         {
             objects = new ObjectList(MaxLoadedSize);
 
-            objects.AddObject(new TestClass(contentManager, 500, 500));
+            objects.AddObject(new TestClass(contentManager, 800, 800));
 
             objects.AddObject(new TestClass2(contentManager, 800, 500));
         }
