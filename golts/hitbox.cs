@@ -83,8 +83,8 @@ namespace golts
                 Tuple<double, double> v1 = HitboxPoints[i];
                 Tuple<double, double> v2 = HitboxPoints[(i + 1) % HitboxPoints.Count];
 
-                Tuple<double, double> minmax1 = MinMaxPos(Game1.GetDirection(v2, v1), this, x1, y1);
-                Tuple<double, double> minmax2 = MinMaxPos(Game1.GetDirection(v2, v1), hitbox, x2, y2);
+                Tuple<double, double> minmax1 = MinMaxPos(Game1.GetDirection(v2, v1) + Math.PI*0.5, this, x1, y1);
+                Tuple<double, double> minmax2 = MinMaxPos(Game1.GetDirection(v2, v1) + Math.PI * 0.5, hitbox, x2, y2);
 
                 if (!((minmax2.Item1 < minmax1.Item1 && minmax1.Item1 < minmax2.Item2 && minmax2.Item2 < minmax1.Item2)
                     || (minmax1.Item1 < minmax2.Item1 && minmax2.Item1 < minmax1.Item2 && minmax1.Item2 < minmax2.Item2)
@@ -98,8 +98,8 @@ namespace golts
                 Tuple<double, double> v1 = hitbox.HitboxPoints[i];
                 Tuple<double, double> v2 = hitbox.HitboxPoints[(i + 1) % HitboxPoints.Count];
 
-                Tuple<double, double> minmax1 = MinMaxPos(Game1.GetDirection(v2, v1), this, x1, y1);
-                Tuple<double, double> minmax2 = MinMaxPos(Game1.GetDirection(v2, v1), hitbox, x2, y2);
+                Tuple<double, double> minmax1 = MinMaxPos(Game1.GetDirection(v2, v1) + Math.PI * 0.5, this, x1, y1);
+                Tuple<double, double> minmax2 = MinMaxPos(Game1.GetDirection(v2, v1) + Math.PI * 0.5, hitbox, x2, y2);
 
                 if (!((minmax2.Item1 < minmax1.Item1 && minmax1.Item1 < minmax2.Item2 && minmax2.Item2 < minmax1.Item2)
                     || (minmax1.Item1 < minmax2.Item1 && minmax2.Item1 < minmax1.Item2 && minmax1.Item2 < minmax2.Item2)

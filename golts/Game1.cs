@@ -19,7 +19,7 @@ namespace golts
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            IsMouseVisible = false;
+            IsMouseVisible = true;
             _graphics.ApplyChanges();
 
             this.IsFixedTimeStep = true;
