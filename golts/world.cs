@@ -33,7 +33,7 @@ namespace golts
 
             objects.AddObject(new TestClass(contentManager, 800, 800));
 
-            objects.AddObject(new TestClass2(contentManager, 800, 500));
+            objects.AddObject(new TestClass2(contentManager, 800, 300));
         }
 
         public void Update(ContentManager contentManager)
@@ -54,14 +54,6 @@ namespace golts
                     ((PhysicalObject)currentObject).Hitbox.Draw((int)currentObject.X, (int)currentObject.Y, 
                         spriteBatch, 0f, Color.White);
             }
-
-            for (int i = 0; i <= 1920; i += ObjectList.GridCellSize)
-                spriteBatch.Draw(Game1.OnePixel, new Vector2(i, 0), null, Color.Yellow, 0f, new Vector2(0, 0),
-                    new Vector2(1, 1080), SpriteEffects.None, 1f);
-
-            for (int i = 0; i <= 1080; i += ObjectList.GridCellSize)
-                spriteBatch.Draw(Game1.OnePixel, new Vector2(0, i), null, Color.Yellow, 0f, new Vector2(0, 0),
-                    new Vector2(1920, 1), SpriteEffects.None, 1f);
         }
     }
 }

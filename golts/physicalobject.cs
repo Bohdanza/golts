@@ -15,7 +15,8 @@ namespace golts
     //It's like WorldObject but it has hitbox and stuff
     public abstract class PhysicalObject:WorldObject
     {
-        protected int PrevFallingSpeed = StandartFallingSpeed;
+        //Strange things happen when it's less than 0.001
+        private double HitPresicion = 0.1;
 
         public ObjectHitbox Hitbox { get; protected set; }
 
@@ -44,16 +45,7 @@ namespace golts
 
             if (GravityAffected)
             {
-                if (!CollidedY)
-                {
-                    MovementY += StandartFallingSpeed;
-                    PrevFallingSpeed = StandartFallingSpeed;
-                }
-                else
-                {
-                    MovementY += PrevFallingSpeed;
-                    PrevFallingSpeed /= 2;
-                }
+                MovementY += StandartFallingSpeed;
             }
 
             CollidedY = false;
@@ -63,40 +55,62 @@ namespace golts
 
             world.objects.UpdateObjectPosition(this, px, py);
 
-            if (Math.Abs(py - Y) > 0.0000001)
+            if (Math.Abs(py - Y) > HitPresicion)
             {
                 HashSet<PhysicalObject> relatedObjects = world.objects.GetNearbyObjects(this);
 
-                foreach (var currentObject in relatedObjects)
-                    if (currentObject!=this&&Hitbox.CollidesWith(currentObject.Hitbox, X, Y, currentObject.X, currentObject.Y))
-                    {
-                        Y = py;
-                        MovementY /=2;
-                        CollidedY = true;
+                if(Obstructed(relatedObjects))
+                {
+                    CollidedY = true;
+                    double l = py, r = Y;
 
-                        //I'm sorry.
-                        break;
+                    while(Math.Abs(l-r)>HitPresicion)
+                    {
+                        double mid = (l + r) / 2;
+                        Y = mid;
+
+                        if (Obstructed(relatedObjects))
+                            r = mid;
+                        else
+                            l = mid;
                     }
+
+                    Y = r;
+
+                    if (Obstructed(relatedObjects))
+                        Y = l;
+                }
             }
 
             X += MovementX;
 
             world.objects.UpdateObjectPosition(this, px, py);
 
-            if (Math.Abs(px - X) > 0.0000001)
+            if (Math.Abs(px - X) > HitPresicion)
             {
                 HashSet<PhysicalObject> relatedObjects = world.objects.GetNearbyObjects(this);
 
-                foreach (var currentObject in relatedObjects)
-                    if (currentObject != this && Hitbox.CollidesWith(currentObject.Hitbox, X, Y, currentObject.X, currentObject.Y))
-                    {
-                        X = px;
-                        MovementX /=2;
-                        CollidedX = true;
+                if (Obstructed(relatedObjects))
+                {
+                    CollidedX = true;
+                    double l = px, r = X;
 
-                        //I'm sorry. I copypasted this (I solemnly swear it was tested)
-                        break;
+                    while (Math.Abs(l - r) > HitPresicion)
+                    {
+                        double mid = (l + r) / 2;
+                        X = mid;
+
+                        if (Obstructed(relatedObjects))
+                            r = mid;
+                        else
+                            l = mid;
                     }
+
+                    X = r;
+
+                    if (Obstructed(relatedObjects))
+                        X = l;
+                }
             }
 
             world.objects.UpdateObjectPosition(this, px, py);
@@ -104,6 +118,17 @@ namespace golts
             ChangeMovement(-MovementX, -MovementY);
 
             Texture.Update(contentManager);
+        }
+
+        private bool Obstructed(HashSet<PhysicalObject> relatedObjects)
+        {
+            foreach (var currentObject in relatedObjects)
+                if (currentObject != this && Hitbox.CollidesWith(currentObject.Hitbox, X, Y, currentObject.X, currentObject.Y))
+                {
+                    return true;
+                }
+
+            return false;
         }
     }
 }
