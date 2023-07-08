@@ -27,23 +27,6 @@ namespace golts
 
         public override void Update(ContentManager contentManager, World world)
         {
-            var ks = Keyboard.GetState();
-
-            // if (ks.IsKeyDown(Keys.W))
-            //    ChangeMovement(0, -5);
-
-            //if (ks.IsKeyDown(Keys.S))
-            //  ChangeMovement(0, 5);
-
-            if (ks.IsKeyDown(Keys.Z) && CollidedY)
-                ChangeMovement(0, -500);
-
-            if (ks.IsKeyDown(Keys.Left))
-                ChangeMovement(-5, 0);
-
-            if (ks.IsKeyDown(Keys.Right))
-                ChangeMovement(5, 0);
-
             base.Update(contentManager, world);
         }
     }

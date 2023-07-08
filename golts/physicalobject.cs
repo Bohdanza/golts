@@ -16,7 +16,7 @@ namespace golts
     public abstract class PhysicalObject:WorldObject
     {
         //Strange things happen when it's less than 0.001
-        private double HitPresicion = 0.1;
+        public const double HitPresicion = 0.1;
 
         public ObjectHitbox Hitbox { get; protected set; }
 

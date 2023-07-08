@@ -33,7 +33,7 @@ namespace golts
 
             objects.AddObject(new TestClass(contentManager, 800, 800));
 
-            objects.AddObject(new TestClass2(contentManager, 800, 300));
+            objects.AddObject(new Hero(contentManager, 800, 300, 0, 0));
         }
 
         public void Update(ContentManager contentManager)
