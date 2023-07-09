@@ -14,7 +14,8 @@ namespace golts
 {
     public abstract class WorldObject
     {
-        public const int StandartFallingSpeed = 10;
+        protected double PrevFallingSpeed = 3;
+        public const double StandartFallingSpeed = 3;
 
         public bool GravityAffected { get; protected set; }
         public double Weight { get; protected set; }
@@ -46,12 +47,17 @@ namespace golts
         public virtual void Update(ContentManager contentManager, World world)
         {
             if (GravityAffected)
-                MovementY += StandartFallingSpeed;
+                MovementY += PrevFallingSpeed;
+
+            PrevFallingSpeed *= StandartFallingSpeed;
 
             X += MovementX;
             Y += MovementY;
 
-            ChangeMovement(-MovementX, -MovementY);
+            if (!GravityAffected)
+                ChangeMovement(-MovementX, -MovementY);
+            else
+                ChangeMovement(-MovementX, 0);
 
             Texture.Update(contentManager);
         }
@@ -63,11 +69,12 @@ namespace golts
         /// <param name="y">Sprite drawing location bottom</param>
         /// <param name="spriteBatch"></param>
         /// <param name="color"></param>
-        public virtual void Draw(int x, int y, SpriteBatch spriteBatch, float depth, float scale, Color color)
+        public virtual void Draw(int x, int y, SpriteBatch spriteBatch, float depth, float scale, 
+            Color color, SpriteEffects spriteEffects)
         {
             Texture2D spriteToDraw = Texture.GetCurrentFrame();
             spriteBatch.Draw(spriteToDraw, new Vector2(x - spriteToDraw.Width*scale / 2, y - spriteToDraw.Height*scale),
-                null, color, 0f, new Vector2(0, 0), scale, SpriteEffects.None, depth + DrawingDepth);
+                null, color, 0f, new Vector2(0, 0), scale, spriteEffects, depth + DrawingDepth);
         }
 
         /// <summary>

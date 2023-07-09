@@ -15,7 +15,7 @@ namespace golts
     public class Hero : Mob
     {
         public Hero(ContentManager contentManager, double x, double y, double movementX, double movementY)
-            : base(contentManager, x, y, movementX, movementY, 2, true, "hero", @"boxes\hero", 5, 5, "id")
+            : base(contentManager, x, y, movementX, movementY, 5, true, "hero", @"boxes\hero", 5, 5, "id")
         { }
 
         public override void Update(ContentManager contentManager, World world)
@@ -23,7 +23,7 @@ namespace golts
             var ks = Keyboard.GetState();
 
             if (ks.IsKeyDown(Keys.Z) && CollidedY)
-                ChangeMovement(0, -200);
+                ChangeMovement(0, -320);
 
             if (ks.IsKeyDown(Keys.Left))
                 ChangeMovement(-3, 0);

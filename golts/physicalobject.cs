@@ -62,6 +62,7 @@ namespace golts
                 if(Obstructed(relatedObjects))
                 {
                     CollidedY = true;
+                    PrevFallingSpeed = StandartFallingSpeed;
                     double l = py, r = Y;
 
                     while(Math.Abs(l-r)>HitPresicion)

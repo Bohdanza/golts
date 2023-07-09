@@ -56,15 +56,23 @@ namespace golts
             else if (MovementX < 0)
                 Direction = 1;
 
-            if (previousAction != Action|| previousDirection != Direction)
+            if (previousAction != Action)
             {
-                Texture = new DynamicTexture(contentManager, standTextureName + "_" + Action + "_" + Direction.ToString());
+                Texture = new DynamicTexture(contentManager, standTextureName + "_" + Action + "_".ToString());
             }
 
             base.Update(contentManager, world);
 
             previousAction = Action;
             previousDirection = Direction;
+        }
+
+        public override void Draw(int x, int y, SpriteBatch spriteBatch, float depth, float scale, Color color, SpriteEffects spriteEffects)
+        {
+            if (Direction == 1)
+                spriteEffects = SpriteEffects.FlipHorizontally;
+
+            base.Draw(x, y, spriteBatch, depth, scale, color, spriteEffects);
         }
     }
 }
