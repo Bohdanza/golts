@@ -17,11 +17,19 @@ namespace golts
     /// </summary>
     public class ObjectHitbox
     {
+        [JsonProperty]
         public List<Tuple<double, double>> HitboxPoints { get; protected set; }
+        [JsonProperty]
         public double MinX { get; init; }
+        [JsonProperty]
         public double MinY { get; init; }
+        [JsonProperty]
         public double MaxX { get; init; }
+        [JsonProperty]
         public double MaxY { get; init; }
+
+        [JsonConstructor]
+        public ObjectHitbox() { }
 
         public ObjectHitbox(string path)
         {

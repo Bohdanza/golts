@@ -9,6 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace golts
 {
@@ -16,10 +18,15 @@ namespace golts
     {
         public const int GridCellSize = 120;
 
+        [JsonProperty]
         public List<WorldObject> objects { get; private set; }
+        [JsonProperty]
         public List<PhysicalObject>[,] ObjectGrid { get; private set; }
-
+        [JsonProperty]
         public int GridSize { get; private set; }
+
+        [Newtonsoft.Json.JsonConstructor]
+        public ObjectList() { }
 
         /// <summary>
         /// Init normally

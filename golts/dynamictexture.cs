@@ -16,12 +16,18 @@ namespace golts
     {
         public int FrameDelay { get; protected set; }
         private int TimeSinceLastUpdate = 0;
+        private bool loaded = false;
 
         [JsonProperty]
         public string BaseName { get; protected set; }
 
+        [JsonIgnore]
         public List<Texture2D> Textures { get; protected set; }
+        [JsonIgnore]
         public int CurrentTexture { get; protected set; }
+
+        [Newtonsoft.Json.JsonConstructor]
+        public DynamicTexture(){}
 
         /// <summary>
         /// For animation purposes
@@ -43,6 +49,8 @@ namespace golts
         /// <param name="contentManager">guess what u must pass here</param>
         public void Load(ContentManager contentManager)
         {
+            loaded = true;
+
             if (contentManager != null)
             {
                 Textures = new List<Texture2D>();
@@ -70,6 +78,9 @@ namespace golts
         /// </summary>
         public void Update(ContentManager contentManager)
         {
+            if (!loaded)
+                Load(contentManager);
+
             TimeSinceLastUpdate++;
 
             if (TimeSinceLastUpdate > FrameDelay)

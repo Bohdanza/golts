@@ -20,6 +20,9 @@ namespace golts
         public string Path { get; private set; }
         public string Name { get; private set; }
 
+        [JsonProperty]
+        public int RoomIndex { get; private set; } = 0;
+
         public ObjectList objects { get; private set; }
 
         //why not
@@ -29,6 +32,11 @@ namespace golts
 
         public World(ContentManager contentManager, string path)
         {
+            if (path[path.Length - 1] != '\\')
+                path += "\\";
+
+            Path = path;
+
             objects = new ObjectList(MaxLoadedSize);
 
             objects.AddObject(new TestClass(contentManager, 800, 800));
@@ -53,6 +61,28 @@ namespace golts
                 if (HitboxesShown && currentObject is PhysicalObject)
                     ((PhysicalObject)currentObject).Hitbox.Draw((int)currentObject.X, (int)currentObject.Y, 
                         spriteBatch, 0f, Color.White);
+            }
+        }
+
+        public void Save()
+        {
+            SaveRoom();
+        }
+
+        private void SaveRoom()
+        {
+            var jss = new JsonSerializerSettings();
+            jss.TypeNameHandling = TypeNameHandling.Objects;
+
+            if (!Directory.Exists(Path))
+                Directory.CreateDirectory(Path);
+
+            using (StreamWriter sw = new StreamWriter(Path + "currentroom"))
+                sw.WriteLine(RoomIndex);
+
+            using (StreamWriter sw=new StreamWriter(Path+RoomIndex.ToString()))
+            {
+                sw.Write(JsonConvert.SerializeObject(objects, jss));
             }
         }
     }

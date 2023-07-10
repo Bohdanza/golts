@@ -18,24 +18,34 @@ namespace golts
         //Strange things happen when it's less than 0.001
         public const double HitPresicion = 0.1;
 
+        [JsonProperty]
         public ObjectHitbox Hitbox { get; protected set; }
 
+        [JsonProperty]
+        public double HitboxLayer { get; protected set; }
+
+        [JsonIgnore]
         protected bool CollidedY = false, CollidedX = false;
+        
+        [Newtonsoft.Json.JsonConstructor]
+        public PhysicalObject() : base() { }
 
         public PhysicalObject(ContentManager contentManager, 
             double x, double y, double movementx, double movementy, double weight, bool gravityAffected,
-            string textureName,  string hitboxPath):
+            string textureName,  string hitboxPath, double hitboxLayer=0):
             base(contentManager, x, y, movementx, movementy, weight, gravityAffected, textureName)
         {
-            Hitbox = new ObjectHitbox(hitboxPath);  
+            Hitbox = new ObjectHitbox(hitboxPath);
+            HitboxLayer = hitboxLayer;
         }
 
         public PhysicalObject(ContentManager contentManager, 
             double x, double y, double movementx, double movementy, double weight, bool gravityAffected,
-            string textureName, List<Tuple<double, double>> hitbox) :
+            string textureName, List<Tuple<double, double>> hitbox, double hitboxLayer=0) :
             base(contentManager, x, y, movementx, movementy, weight, gravityAffected, textureName)
         {
             Hitbox = new ObjectHitbox(hitbox);
+            HitboxLayer = hitboxLayer;
         }
 
         public override void Update(ContentManager contentManager, World world)
@@ -120,7 +130,7 @@ namespace golts
 
             Texture.Update(contentManager);
         }
-
+        
         private bool Obstructed(HashSet<PhysicalObject> relatedObjects)
         {
             foreach (var currentObject in relatedObjects)

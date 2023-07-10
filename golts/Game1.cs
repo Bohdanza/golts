@@ -38,7 +38,7 @@ namespace golts
 
         protected override void Initialize()
         {
-            world = new World(Content, "fuckitits1:16amalready");
+            world = new World(Content, "saves\\1");
             base.Initialize();
         }
 
@@ -53,7 +53,10 @@ namespace golts
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                world.Save();
                 Exit();
+            }
 
             // TODO: Add your update logic here
 

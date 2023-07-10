@@ -26,10 +26,10 @@ namespace golts
                 ChangeMovement(0, -320);
 
             if (ks.IsKeyDown(Keys.Left))
-                ChangeMovement(-3, 0);
+                ChangeMovement(-6, 0);
 
             if (ks.IsKeyDown(Keys.Right))
-                ChangeMovement(3, 0);
+                ChangeMovement(6, 0);
 
             if (Math.Abs(MovementX) < HitPresicion)
                 Action = "id";

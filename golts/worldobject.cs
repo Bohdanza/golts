@@ -14,19 +14,31 @@ namespace golts
 {
     public abstract class WorldObject
     {
+        [JsonIgnore]
         protected double PrevFallingSpeed = 3;
         public const double StandartFallingSpeed = 3;
 
+        [JsonProperty]
         public bool GravityAffected { get; protected set; }
+        [JsonProperty]
         public double Weight { get; protected set; }
 
+        [JsonProperty]
         public double MovementX { get; protected set; }
+        [JsonProperty]
         public double MovementY { get; protected set; }
+        [JsonProperty]
         public double X { get; protected set; }
+        [JsonProperty]
         public double Y { get; protected set; }
 
+        [JsonProperty]
         public DynamicTexture Texture { get; protected set; }
+        [JsonProperty]
         public float DrawingDepth=0.0f;
+
+        [Newtonsoft.Json.JsonConstructor]
+        public WorldObject() { }
 
         public WorldObject(ContentManager contentManager, 
             double x, double y, double movementx, double movementy, double weight, bool gravityAffected, 

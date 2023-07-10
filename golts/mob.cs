@@ -73,6 +73,7 @@ namespace golts
                 spriteEffects = SpriteEffects.FlipHorizontally;
 
             base.Draw(x, y, spriteBatch, depth, scale, color, spriteEffects);
+
         }
     }
 }
