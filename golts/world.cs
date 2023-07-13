@@ -30,6 +30,14 @@ namespace golts
 
         private bool HitboxesShown = true;
 
+        //Later these init methods shall be made one for the good code style rejoice.
+        //It should automatically check for saves and load or create new depending on found ones
+
+        /// <summary>
+        /// Use this to init new world TEMPORARILY
+        /// </summary>
+        /// <param name="contentManager"></param>
+        /// <param name="path"></param>
         public World(ContentManager contentManager, string path)
         {
             if (path[path.Length - 1] != '\\')
@@ -42,6 +50,21 @@ namespace golts
             objects.AddObject(new TestClass(contentManager, 800, 800));
 
             objects.AddObject(new Hero(contentManager, 800, 300, 0, 0));
+        }
+
+        /// <summary>
+        /// Use this to load existing world TEMPORARILY
+        /// </summary>
+        /// <param name="contentManager"></param>
+        /// <param name="path"></param>
+        public World(string path)
+        {
+            if (path[path.Length - 1] != '\\')
+                path += "\\";
+
+            Path = path;
+
+            Load();
         }
 
         public void Update(ContentManager contentManager)
@@ -66,6 +89,12 @@ namespace golts
 
         public void Save()
         {
+            if (!Directory.Exists(Path))
+                Directory.CreateDirectory(Path);
+
+            using (StreamWriter sw = new StreamWriter(Path + "currentroom"))
+                sw.WriteLine(RoomIndex);
+
             SaveRoom();
         }
 
@@ -74,15 +103,28 @@ namespace golts
             var jss = new JsonSerializerSettings();
             jss.TypeNameHandling = TypeNameHandling.Objects;
 
-            if (!Directory.Exists(Path))
-                Directory.CreateDirectory(Path);
-
-            using (StreamWriter sw = new StreamWriter(Path + "currentroom"))
-                sw.WriteLine(RoomIndex);
-
             using (StreamWriter sw=new StreamWriter(Path+RoomIndex.ToString()))
             {
                 sw.Write(JsonConvert.SerializeObject(objects, jss));
+            }
+        }
+
+        private void Load()
+        {
+            using (StreamReader sr = new StreamReader(Path + "currentroom"))
+                RoomIndex = int.Parse(sr.ReadLine());
+
+            LoadRoom(RoomIndex);
+        }
+
+        private void LoadRoom(int index)
+        {
+            var jss = new JsonSerializerSettings();
+            jss.TypeNameHandling = TypeNameHandling.Objects;
+
+            using (StreamReader sr = new StreamReader(Path + index.ToString()))
+            {
+                objects = (ObjectList)JsonConvert.DeserializeObject(sr.ReadToEnd(), jss);
             }
         }
     }

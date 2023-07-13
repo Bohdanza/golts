@@ -20,13 +20,28 @@ namespace golts
 
         [JsonProperty]
         public List<WorldObject> objects { get; private set; }
-        [JsonProperty]
+        [Newtonsoft.Json.JsonIgnore]
         public List<PhysicalObject>[,] ObjectGrid { get; private set; }
         [JsonProperty]
         public int GridSize { get; private set; }
 
         [Newtonsoft.Json.JsonConstructor]
-        public ObjectList() { }
+        public ObjectList(List<WorldObject> objects, int GridSize) 
+        {
+            this.GridSize = GridSize;
+            this.objects = objects;
+            ObjectGrid = new List<PhysicalObject>[GridSize, GridSize];
+
+            for (int i = 0; i < GridSize; i++)
+                for (int j = 0; j < GridSize; j++)
+                    ObjectGrid[i, j] = new List<PhysicalObject>();
+
+            foreach(var currentObject in this.objects)
+            {
+                if(currentObject is PhysicalObject)
+                    AddToGrid((PhysicalObject)currentObject);
+            }
+        }
 
         /// <summary>
         /// Init normally
@@ -51,16 +66,20 @@ namespace golts
             
             if(worldObject is PhysicalObject)
             {
-                PhysicalObject po = (PhysicalObject)worldObject;
-                double xBegin = Math.Max(0, po.X + po.Hitbox.MinX - GridCellSize);
-                double xEnd = Math.Min(GridSize * GridCellSize, po.X + po.Hitbox.MaxX+GridCellSize);
-                double yBegin = Math.Max(0, po.Y + po.Hitbox.MinY- GridCellSize);
-                double yEnd = Math.Min(GridSize * GridCellSize, po.Y + po.Hitbox.MaxY + GridCellSize);
-
-                for (double i = xBegin; i < xEnd; i += GridCellSize)
-                    for (double j = yBegin; j < yEnd; j += GridCellSize)
-                        ObjectGrid[(int)(i / GridCellSize), (int)(j / GridCellSize)].Add(po);
+                AddToGrid((PhysicalObject)worldObject);
             }
+        }
+
+        private void AddToGrid(PhysicalObject po)
+        {
+            double xBegin = Math.Max(0, po.X + po.Hitbox.MinX - GridCellSize);
+            double xEnd = Math.Min(GridSize * GridCellSize, po.X + po.Hitbox.MaxX + GridCellSize);
+            double yBegin = Math.Max(0, po.Y + po.Hitbox.MinY - GridCellSize);
+            double yEnd = Math.Min(GridSize * GridCellSize, po.Y + po.Hitbox.MaxY + GridCellSize);
+
+            for (double i = xBegin; i < xEnd; i += GridCellSize)
+                for (double j = yBegin; j < yEnd; j += GridCellSize)
+                    ObjectGrid[(int)(i / GridCellSize), (int)(j / GridCellSize)].Add(po);
         }
 
         public void UpdateObjectPosition(PhysicalObject physicalObject, double previousX, double previousY)
