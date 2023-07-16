@@ -38,7 +38,7 @@ namespace golts
 
         protected override void Initialize()
         {
-            world = new World(/*Content,*/ "saves\\1");
+            world = new World(Content, "saves\\1");
             base.Initialize();
         }
 
