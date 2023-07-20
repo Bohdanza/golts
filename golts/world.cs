@@ -79,7 +79,7 @@ namespace golts
         {
             foreach(var currentObject in objects.objects)
             {
-                currentObject.Draw((int)currentObject.X, (int)currentObject.Y, spriteBatch, 0f, 4f, Color.White, SpriteEffects.None);
+                currentObject.Draw((int)currentObject.X, (int)currentObject.Y, spriteBatch, 0f, Game1.StandardScale, Color.White, SpriteEffects.None);
 
                 if (HitboxesShown && currentObject is PhysicalObject)
                     ((PhysicalObject)currentObject).Hitbox.Draw((int)currentObject.X, (int)currentObject.Y, 

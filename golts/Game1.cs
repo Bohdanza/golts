@@ -9,6 +9,7 @@ namespace golts
     {
         public static Texture2D NoTexture;
         public static Texture2D OnePixel;
+        public static float StandardScale = 4f;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -38,7 +39,7 @@ namespace golts
 
         protected override void Initialize()
         {
-            world = new World(Content, "saves\\1");
+            world = new World(/*Content,*/ "saves\\1");
             base.Initialize();
         }
 

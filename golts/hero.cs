@@ -14,6 +14,9 @@ namespace golts
 {
     public class Hero : Mob
     {
+        [JsonConstructor]
+        public Hero() { }
+
         public Hero(ContentManager contentManager, double x, double y, double movementX, double movementY)
             : base(contentManager, x, y, movementX, movementY, 5, true, "hero", @"boxes\hero", 5, 5, "id")
         { }

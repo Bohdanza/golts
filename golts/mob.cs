@@ -23,7 +23,11 @@ namespace golts
         public int Direction { get; protected set; }
         protected int previousDirection = -1;
 
-        protected string standTextureName { get; init; } 
+        [JsonProperty]
+        protected string standTextureName { get; init; }
+
+        [JsonConstructor]
+        public Mob() { }
 
         public Mob(ContentManager contentManager, double x, double y, double movementX, double movementY, int weight,
             bool gravityAffected, string textureName, string hitboxPath, 

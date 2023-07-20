@@ -90,6 +90,8 @@ namespace golts
 
                     if (Obstructed(relatedObjects))
                         Y = l;
+
+                    MovementY = StandartFallingSpeed;
                 }
             }
 
