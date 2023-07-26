@@ -61,7 +61,7 @@ namespace golts
         {
             if (path[path.Length - 1] != '\\')
                 path += "\\";
-
+            
             Path = path;
 
             Load();
@@ -79,11 +79,11 @@ namespace golts
         {
             foreach(var currentObject in objects.objects)
             {
-                currentObject.Draw((int)currentObject.X, (int)currentObject.Y, spriteBatch, 0f, Game1.StandardScale, Color.White, SpriteEffects.None);
+                currentObject.Draw((int)currentObject.X, (int)currentObject.Y, spriteBatch, 0.5f, Game1.StandardScale, Color.White, SpriteEffects.None);
 
                 if (HitboxesShown && currentObject is PhysicalObject)
                     ((PhysicalObject)currentObject).Hitbox.Draw((int)currentObject.X, (int)currentObject.Y, 
-                        spriteBatch, 0f, Color.White);
+                        spriteBatch, 0.5f, Color.White);
             }
         }
 

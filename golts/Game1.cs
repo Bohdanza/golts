@@ -70,7 +70,7 @@ namespace golts
         {
             GraphicsDevice.Clear(new Color(128, 128, 128));
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.PointClamp);
             world.Draw(_spriteBatch);
             _spriteBatch.End();
 

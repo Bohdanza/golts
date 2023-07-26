@@ -36,14 +36,18 @@ namespace golts
         public DynamicTexture Texture { get; protected set; }
         [JsonProperty]
         public float DrawingDepth=0.0f;
+        [JsonProperty]
+        public float ParalaxCoefficient { get; protected set; } = 1.0f;
 
         [Newtonsoft.Json.JsonConstructor]
         public WorldObject() { }
 
         public WorldObject(ContentManager contentManager, 
             double x, double y, double movementx, double movementy, double weight, bool gravityAffected, 
-            string textureName)
+            string textureName, float paralaxCoefficient=1.0f)
         {
+            ParalaxCoefficient = paralaxCoefficient;
+
             X = x;
             Y = y;
 
@@ -84,8 +88,11 @@ namespace golts
         public virtual void Draw(int x, int y, SpriteBatch spriteBatch, float depth, float scale, 
             Color color, SpriteEffects spriteEffects)
         {
+            int x1 = (int)(x * ParalaxCoefficient);
+            int y1 = (int)(y * ParalaxCoefficient);
+
             Texture2D spriteToDraw = Texture.GetCurrentFrame();
-            spriteBatch.Draw(spriteToDraw, new Vector2(x - spriteToDraw.Width*scale / 2, y - spriteToDraw.Height*scale),
+            spriteBatch.Draw(spriteToDraw, new Vector2(x1 - spriteToDraw.Width * scale / 2, y1 - spriteToDraw.Height * scale),
                 null, color, 0f, new Vector2(0, 0), scale, spriteEffects, depth + DrawingDepth);
         }
 
