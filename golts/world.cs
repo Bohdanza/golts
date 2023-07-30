@@ -51,6 +51,7 @@ namespace golts
             {
                 objects = new ObjectList(MaxLoadedSize);
 
+                //TODO: add copying world from standard world temp
                 objects.AddObject(new TestClass(contentManager, 800, 800));
 
                 Hero = new Hero(contentManager, 800, 300, 0, 0);
@@ -85,7 +86,7 @@ namespace golts
         {
             foreach(var currentObject in objects.objects)
             {
-                currentObject.Draw((int)(currentObject.X - WorldCamera.X), (int)(currentObject.Y - WorldCamera.Y),
+                currentObject.Draw((int)currentObject.X, (int)currentObject.Y, -(int)WorldCamera.X, -(int)WorldCamera.Y,
                     spriteBatch, 0.5f, Game1.StandardScale, Color.White, SpriteEffects.None);
 
                 if (HitboxesShown && currentObject is PhysicalObject)

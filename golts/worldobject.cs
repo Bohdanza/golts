@@ -85,11 +85,11 @@ namespace golts
         /// <param name="y">Sprite drawing location bottom</param>
         /// <param name="spriteBatch"></param>
         /// <param name="color"></param>
-        public virtual void Draw(int x, int y, SpriteBatch spriteBatch, float depth, float scale, 
-            Color color, SpriteEffects spriteEffects)
+        public virtual void Draw(int xAbsolute, int yAbsolute, int xCamera, int yCamera,
+            SpriteBatch spriteBatch, float depth, float scale, Color color, SpriteEffects spriteEffects)
         {
-            int x1 = (int)(x * ParalaxCoefficient);
-            int y1 = (int)(y * ParalaxCoefficient);
+            int x1 = (int)(xCamera * ParalaxCoefficient) + xAbsolute;
+            int y1 = (int)(yCamera * ParalaxCoefficient) + yAbsolute;
 
             Texture2D spriteToDraw = Texture.GetCurrentFrame();
             spriteBatch.Draw(spriteToDraw, new Vector2(x1 - spriteToDraw.Width * scale / 2, y1 - spriteToDraw.Height * scale),

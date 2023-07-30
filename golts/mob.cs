@@ -71,12 +71,13 @@ namespace golts
             previousDirection = Direction;
         }
 
-        public override void Draw(int x, int y, SpriteBatch spriteBatch, float depth, float scale, Color color, SpriteEffects spriteEffects)
+        public override void Draw(int xAbsolute, int yAbsolute, int xCamera, int yCamera, 
+            SpriteBatch spriteBatch, float depth, float scale, Color color, SpriteEffects spriteEffects)
         {
             if (Direction == 1)
                 spriteEffects = SpriteEffects.FlipHorizontally;
 
-            base.Draw(x, y, spriteBatch, depth, scale, color, spriteEffects);
+            base.Draw(xAbsolute, yAbsolute, xCamera, yCamera, spriteBatch, depth, scale, color, spriteEffects);
         }
     }
 }
