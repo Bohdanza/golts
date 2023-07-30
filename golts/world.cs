@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
+using System.Timers;
 
 namespace golts
 {
@@ -26,7 +27,8 @@ namespace golts
         public ObjectList objects { get; private set; }
 
         //why not
-        public WorldObject Camera { get; private set; }
+        public Camera WorldCamera { get; private set; }
+        public Hero Hero { get; private set; }
 
         private bool HitboxesShown = true;
 
@@ -38,33 +40,31 @@ namespace golts
         /// </summary>
         /// <param name="contentManager"></param>
         /// <param name="path"></param>
-        public World(ContentManager contentManager, string path)
+        public World(ContentManager contentManager, string path, bool Rewrite)
         {
             if (path[path.Length - 1] != '\\')
                 path += "\\";
 
             Path = path;
 
-            objects = new ObjectList(MaxLoadedSize);
+            if (Rewrite)
+            {
+                objects = new ObjectList(MaxLoadedSize);
 
-            objects.AddObject(new TestClass(contentManager, 800, 800));
+                objects.AddObject(new TestClass(contentManager, 800, 800));
 
-            objects.AddObject(new Hero(contentManager, 800, 300, 0, 0));
-        }
+                Hero = new Hero(contentManager, 800, 300, 0, 0);
+                objects.AddObject(Hero);
+            }
+            else
+            {
+                Load();
+                foreach(var currentObject in objects.objects)
+                    if(currentObject is Hero)
+                        Hero = (Hero)currentObject;
+            }
 
-        /// <summary>
-        /// Use this to load existing world TEMPORARILY
-        /// </summary>
-        /// <param name="contentManager"></param>
-        /// <param name="path"></param>
-        public World(string path)
-        {
-            if (path[path.Length - 1] != '\\')
-                path += "\\";
-            
-            Path = path;
-
-            Load();
+            WorldCamera = new Camera(contentManager, Hero.X, Hero.Y, 0, 0, 10);
         }
 
         public void Update(ContentManager contentManager)
@@ -73,16 +73,24 @@ namespace golts
             {
                 objects.objects[i].Update(contentManager, this);
             }
+
+            WorldCamera.ChangeMovement(
+                Math.Min(Math.Max(Hero.X - 960 - WorldCamera.X, -Camera.MaxMovementSpeed), Camera.MaxMovementSpeed),
+                Math.Min(Math.Max(Hero.Y - 540 - WorldCamera.Y, -Camera.MaxMovementSpeed), Camera.MaxMovementSpeed));
+
+            WorldCamera.Update(contentManager, this);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach(var currentObject in objects.objects)
             {
-                currentObject.Draw((int)currentObject.X, (int)currentObject.Y, spriteBatch, 0.5f, Game1.StandardScale, Color.White, SpriteEffects.None);
+                currentObject.Draw((int)(currentObject.X - WorldCamera.X), (int)(currentObject.Y - WorldCamera.Y),
+                    spriteBatch, 0.5f, Game1.StandardScale, Color.White, SpriteEffects.None);
 
                 if (HitboxesShown && currentObject is PhysicalObject)
-                    ((PhysicalObject)currentObject).Hitbox.Draw((int)currentObject.X, (int)currentObject.Y, 
+                    ((PhysicalObject)currentObject).Hitbox.Draw(
+                        (int)(currentObject.X - WorldCamera.X), (int)(currentObject.Y - WorldCamera.Y),
                         spriteBatch, 0.5f, Color.White);
             }
         }

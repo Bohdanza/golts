@@ -25,7 +25,7 @@ namespace golts
         {
             var ks = Keyboard.GetState();
 
-            if (ks.IsKeyDown(Keys.Z) && CollidedY)
+            if (ks.IsKeyDown(Keys.Z) && CollidedY && MovementY>=0)
                 ChangeMovement(0, -320);
 
             if (ks.IsKeyDown(Keys.Left))
