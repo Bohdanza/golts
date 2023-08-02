@@ -123,6 +123,8 @@ namespace golts
 
                     if (Obstructed(relatedObjects))
                         X = l;
+                    
+                    MovementX = 0;
                 }
             }
 

@@ -30,7 +30,8 @@ namespace golts
         public Camera WorldCamera { get; private set; }
         public Hero Hero { get; private set; }
 
-        private bool HitboxesShown = true;
+        private bool hitboxesShown = true;
+        private bool hitbordersShown = true;
 
         //Later these init methods shall be made one for the good code style rejoice.
         //It should automatically check for saves and load or create new depending on found ones
@@ -89,10 +90,24 @@ namespace golts
                 currentObject.Draw((int)currentObject.X, (int)currentObject.Y, -(int)WorldCamera.X, -(int)WorldCamera.Y,
                     spriteBatch, 0.5f, Game1.StandardScale, Color.White, SpriteEffects.None);
 
-                if (HitboxesShown && currentObject is PhysicalObject)
+                if (hitboxesShown && currentObject is PhysicalObject)
                     ((PhysicalObject)currentObject).Hitbox.Draw(
                         (int)(currentObject.X - WorldCamera.X), (int)(currentObject.Y - WorldCamera.Y),
-                        spriteBatch, 0.5f, Color.White);
+                        spriteBatch, 0.9f, Color.White);
+            }
+
+            if(hitbordersShown)
+            {
+                int bgx = (int)((-WorldCamera.X % ObjectList.GridCellSize) + ObjectList.GridCellSize) % ObjectList.GridCellSize;
+                int bgy = (int)((-WorldCamera.Y % ObjectList.GridCellSize) + ObjectList.GridCellSize) % ObjectList.GridCellSize;
+
+                for (int i = bgx; i <= 1920; i+= ObjectList.GridCellSize)
+                    spriteBatch.Draw(Game1.OnePixel, new Vector2(i, 0), null, Color.Yellow, 0f,
+                        new Vector2(0, 0), new Vector2(1, 1080), SpriteEffects.None, 1f);
+
+                for (int i = bgy; i <= 1080; i += ObjectList.GridCellSize)
+                    spriteBatch.Draw(Game1.OnePixel, new Vector2(0, i), null, Color.Yellow, 0f,
+                        new Vector2(0, 0), new Vector2(1920, 1), SpriteEffects.None, 1f);
             }
         }
 
