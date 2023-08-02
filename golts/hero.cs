@@ -14,6 +14,12 @@ namespace golts
 {
     public class Hero : Mob
     {
+        [JsonProperty]
+        private bool inJump = false;
+        [JsonProperty]
+        private long timeOfLanding = DateTime.Now.Ticks;
+        private const int acceptabelDifference = 5000; //acceptable difference  between jumps
+        
         [JsonConstructor]
         public Hero() { }
 
@@ -25,8 +31,17 @@ namespace golts
         {
             var ks = Keyboard.GetState();
 
-            if (ks.IsKeyDown(Keys.Z) && CollidedY && MovementY>=0)
+            if (inJump && CollidedY)
+            {
+                inJump = false;
+                timeOfLanding = DateTime.Now.Ticks;
+            }
+
+            if (ks.IsKeyDown(Keys.Z) && CollidedY && MovementY>=0 && timeOfLanding < DateTime.Now.Ticks - acceptabelDifference)
+            {
                 ChangeMovement(0, -320);
+                inJump = true;            
+            }
 
             if (ks.IsKeyDown(Keys.Left))
                 ChangeMovement(-6, 0);
