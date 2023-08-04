@@ -21,7 +21,7 @@ namespace golts
         [JsonProperty]
         public List<WorldObject> objects { get; private set; }
         [Newtonsoft.Json.JsonIgnore]
-        public List<PhysicalObject>[,] ObjectGrid { get; private set; }
+        public SortedDictionary<int, List<PhysicalObject>[,]> ObjectGrid { get; private set; }
         [JsonProperty]
         public int GridSize { get; private set; }
 
@@ -30,11 +30,7 @@ namespace golts
         {
             this.GridSize = GridSize;
             this.objects = objects;
-            ObjectGrid = new List<PhysicalObject>[GridSize, GridSize];
-
-            for (int i = 0; i < GridSize; i++)
-                for (int j = 0; j < GridSize; j++)
-                    ObjectGrid[i, j] = new List<PhysicalObject>();
+            ObjectGrid = new SortedDictionary<int, List<PhysicalObject>[,]>();
 
             foreach(var currentObject in this.objects)
             {
@@ -53,11 +49,21 @@ namespace golts
             GridSize = worldSize / GridCellSize;
 
             objects = new List<WorldObject>();
-            ObjectGrid=new List<PhysicalObject>[GridSize, GridSize];
+            ObjectGrid = new SortedDictionary<int, List<PhysicalObject>[,]>();
+        }
 
-            for (int i = 0; i < GridSize; i++)
-                for (int j = 0; j < GridSize; j++)
-                    ObjectGrid[i, j] = new List<PhysicalObject>();
+        public void AddLayer(int layer)
+        {
+            if(!ObjectGrid.ContainsKey(layer))
+            {
+                List<PhysicalObject>[,] tempList = new List<PhysicalObject>[GridSize, GridSize];
+
+                for (int i = 0; i < GridSize; i++)
+                    for (int j = 0; j < GridSize; j++)
+                        tempList[i, j] = new List<PhysicalObject>();
+
+                ObjectGrid.Add(layer, tempList);
+            }
         }
 
         public void AddObject(WorldObject worldObject)
@@ -70,7 +76,32 @@ namespace golts
             }
         }
 
+        public void DeleteObject(WorldObject worldObject)
+        {
+            objects.Remove(worldObject);
+
+            if (worldObject is PhysicalObject)
+            {
+                DeleteFromGrid((PhysicalObject)worldObject);
+            }
+        }
+
         private void AddToGrid(PhysicalObject po)
+        {
+            int layer = po.CollisionLayer;
+            AddLayer(layer);
+
+            double xBegin = Math.Max(0, po.X + po.Hitbox.MinX - GridCellSize);
+            double xEnd = Math.Min(GridSize * GridCellSize, po.X + po.Hitbox.MaxX + GridCellSize);
+            double yBegin = Math.Max(0, po.Y + po.Hitbox.MinY - GridCellSize);
+            double yEnd = Math.Min(GridSize * GridCellSize, po.Y + po.Hitbox.MaxY + GridCellSize);
+
+            for (double i = xBegin; i < xEnd; i += GridCellSize)
+                for (double j = yBegin; j < yEnd; j += GridCellSize)
+                    ObjectGrid[layer][(int)(i / GridCellSize), (int)(j / GridCellSize)].Add(po);
+        }
+
+        private void DeleteFromGrid(PhysicalObject po)
         {
             double xBegin = Math.Max(0, po.X + po.Hitbox.MinX - GridCellSize);
             double xEnd = Math.Min(GridSize * GridCellSize, po.X + po.Hitbox.MaxX + GridCellSize);
@@ -79,7 +110,7 @@ namespace golts
 
             for (double i = xBegin; i < xEnd; i += GridCellSize)
                 for (double j = yBegin; j < yEnd; j += GridCellSize)
-                    ObjectGrid[(int)(i / GridCellSize), (int)(j / GridCellSize)].Add(po);
+                    ObjectGrid[po.CollisionLayer][(int)(i / GridCellSize), (int)(j / GridCellSize)].Remove(po);
         }
 
         public void UpdateObjectPosition(PhysicalObject physicalObject, double previousX, double previousY)
@@ -94,7 +125,7 @@ namespace golts
 
                 for (double i = xBegin; i < xEnd; i += GridCellSize)
                     for (double j = yBegin; j < yEnd; j += GridCellSize)
-                        ObjectGrid[(int)(i / GridCellSize), (int)(j / GridCellSize)].Remove(physicalObject);
+                        ObjectGrid[physicalObject.CollisionLayer][(int)(i / GridCellSize), (int)(j / GridCellSize)].Remove(physicalObject);
 
                 xBegin = Math.Max(0, physicalObject.X + physicalObject.Hitbox.MinX - GridCellSize);
                 xEnd = Math.Min(GridSize * GridCellSize, physicalObject.X + physicalObject.Hitbox.MaxX+ GridCellSize);
@@ -103,7 +134,7 @@ namespace golts
 
                 for (double i = xBegin; i < xEnd; i += GridCellSize)
                     for (double j = yBegin; j < yEnd; j += GridCellSize)
-                        ObjectGrid[(int)(i / GridCellSize), (int)(j / GridCellSize)].Add(physicalObject);
+                        ObjectGrid[physicalObject.CollisionLayer][(int)(i / GridCellSize), (int)(j / GridCellSize)].Add(physicalObject);
             }
         }
 
@@ -112,7 +143,7 @@ namespace golts
         /// </summary>
         /// <param name="physicalObject"></param>
         /// <returns></returns>
-        public HashSet<PhysicalObject> GetNearbyObjects(PhysicalObject physicalObject)
+        public HashSet<PhysicalObject> GetNearbyObjects(PhysicalObject physicalObject, int layer)
         {
             HashSet<PhysicalObject> objects = new HashSet<PhysicalObject>();
 
@@ -123,7 +154,7 @@ namespace golts
 
             for (double i = xBegin; i < xEnd; i += GridCellSize)
                 for (double j = yBegin; j < yEnd; j += GridCellSize)
-                    objects.UnionWith(ObjectGrid[(int)(i / GridCellSize), (int)(j / GridCellSize)]);
+                    objects.UnionWith(ObjectGrid[layer][(int)(i / GridCellSize), (int)(j / GridCellSize)]);
 
             return objects;
         }

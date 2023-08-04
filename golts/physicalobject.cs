@@ -22,7 +22,7 @@ namespace golts
         public ObjectHitbox Hitbox { get; protected set; }
 
         [JsonProperty]
-        public double HitboxLayer { get; protected set; }
+        public int CollisionLayer { get; protected set; }
 
         [JsonIgnore]
         protected bool CollidedY = false, CollidedX = false;
@@ -30,22 +30,22 @@ namespace golts
         [Newtonsoft.Json.JsonConstructor]
         public PhysicalObject() : base() { }
 
-        public PhysicalObject(ContentManager contentManager, 
+        public PhysicalObject(ContentManager contentManager,
             double x, double y, double movementx, double movementy, double weight, bool gravityAffected,
-            string textureName,  string hitboxPath, double hitboxLayer=0):
+            string textureName, string hitboxPath, int collisionLayer = 0) :
             base(contentManager, x, y, movementx, movementy, weight, gravityAffected, textureName)
         {
             Hitbox = new ObjectHitbox(hitboxPath);
-            HitboxLayer = hitboxLayer;
+            CollisionLayer = collisionLayer;
         }
 
         public PhysicalObject(ContentManager contentManager, 
             double x, double y, double movementx, double movementy, double weight, bool gravityAffected,
-            string textureName, List<Tuple<double, double>> hitbox, double hitboxLayer=0) :
+            string textureName, List<Tuple<double, double>> hitbox, int collisionLayer = 0) :
             base(contentManager, x, y, movementx, movementy, weight, gravityAffected, textureName)
         {
             Hitbox = new ObjectHitbox(hitbox);
-            HitboxLayer = hitboxLayer;
+            CollisionLayer = collisionLayer;
         }
 
         public override void Update(ContentManager contentManager, World world)
@@ -67,7 +67,7 @@ namespace golts
 
             if (Math.Abs(py - Y) > HitPresicion)
             {
-                HashSet<PhysicalObject> relatedObjects = world.objects.GetNearbyObjects(this);
+                HashSet<PhysicalObject> relatedObjects = world.objects.GetNearbyObjects(this, CollisionLayer);
 
                 if(Obstructed(relatedObjects))
                 {
@@ -101,7 +101,7 @@ namespace golts
 
             if (Math.Abs(px - X) > HitPresicion)
             {
-                HashSet<PhysicalObject> relatedObjects = world.objects.GetNearbyObjects(this);
+                HashSet<PhysicalObject> relatedObjects = world.objects.GetNearbyObjects(this, CollisionLayer);
 
                 if (Obstructed(relatedObjects))
                 {
