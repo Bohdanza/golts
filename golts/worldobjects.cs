@@ -9,8 +9,14 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 using System.Diagnostics.CodeAnalysis;
+
+/*
+ * Collision layers:
+ * 0 - main layer (Hero, monsters, obstacles)
+ * 1 - portals
+ * 
+ */
 
 namespace golts
 {
@@ -25,7 +31,7 @@ namespace golts
         [JsonProperty]
         public int GridSize { get; private set; }
 
-        [Newtonsoft.Json.JsonConstructor]
+        [JsonConstructor]
         public ObjectList(List<WorldObject> objects, int GridSize) 
         {
             this.GridSize = GridSize;

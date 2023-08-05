@@ -101,7 +101,7 @@ namespace golts
             for (int i = 0; i < hitbox.HitboxPoints.Count; i++)
             {
                 Tuple<double, double> v1 = hitbox.HitboxPoints[i];
-                Tuple<double, double> v2 = hitbox.HitboxPoints[(i + 1) % HitboxPoints.Count];
+                Tuple<double, double> v2 = hitbox.HitboxPoints[(i + 1) % hitbox.HitboxPoints.Count];
 
                 Tuple<double, double> minmax1 = MinMaxPos(Game1.GetDirection(v2, v1) + Math.PI * 0.5, this, x1, y1);
                 Tuple<double, double> minmax2 = MinMaxPos(Game1.GetDirection(v2, v1) + Math.PI * 0.5, hitbox, x2, y2);

@@ -109,5 +109,11 @@ namespace golts
                 MovementY += y / Weight;
             }
         }
+
+        public virtual void ChangePosition(double x, double y)
+        {
+            X = Math.Max(0, x);
+            Y = Math.Max(0, y);
+        }
     }
 }

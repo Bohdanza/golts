@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using System.Timers;
+using System.Transactions;
 
 namespace golts
 {
@@ -21,7 +22,6 @@ namespace golts
         public string Path { get; private set; }
         public string Name { get; private set; }
 
-        [JsonProperty]
         public int RoomIndex { get; private set; } = 0;
 
         public ObjectList objects { get; private set; }
@@ -30,8 +30,8 @@ namespace golts
         public Camera WorldCamera { get; private set; }
         public Hero Hero { get; private set; }
 
-        private bool hitboxesShown = true;
-        private bool hitbordersShown = true;
+        private bool hitboxesShown = true, hitbordersShown = true;
+        private int roomForChange = -1, exitIndex = -1;
 
         //Later these init methods shall be made one for the good code style rejoice.
         //It should automatically check for saves and load or create new depending on found ones
@@ -71,6 +71,8 @@ namespace golts
 
         public void Update(ContentManager contentManager)
         {
+            roomForChange = -1;
+
             for(int i=0; i<objects.objects.Count; i++)
             {
                 objects.objects[i].Update(contentManager, this);
@@ -81,6 +83,9 @@ namespace golts
                 Math.Min(Math.Max(Hero.Y - 540 - WorldCamera.Y, -Camera.MaxMovementSpeed), Camera.MaxMovementSpeed));
 
             WorldCamera.Update(contentManager, this);
+
+            if (roomForChange != -1)
+                ActuallyChangeRoom();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -109,6 +114,33 @@ namespace golts
                     spriteBatch.Draw(Game1.OnePixel, new Vector2(0, i), null, Color.Yellow, 0f,
                         new Vector2(0, 0), new Vector2(1920, 1), SpriteEffects.None, 1f);
             }
+        }
+
+        public void ChangeRoom(int roomIndex, int exitObjectIndex)
+        {
+            roomForChange=roomIndex; exitIndex=exitObjectIndex;
+        }
+        
+        private void ActuallyChangeRoom()
+        {
+            objects.DeleteObject(Hero);
+            SaveRoom();
+
+            RoomIndex = roomForChange;
+
+            LoadRoom(RoomIndex);
+
+            bool found = false;
+
+            for (int i = 0; i < objects.objects.Count && !found; i++)
+                if (objects.objects[i] is ExitPoint && ((ExitPoint)objects.objects[i]).Index==exitIndex)
+                {
+                    found = true;
+                    Hero.ChangePosition(objects.objects[i].X, objects.objects[i].Y);
+                }
+            
+
+            objects.AddObject(Hero);
         }
 
         public void Save()
