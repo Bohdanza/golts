@@ -19,7 +19,7 @@ namespace golts
 
         public string Action { get; protected set; }
         protected string previousAction = "";
- 
+
         public int Direction { get; protected set; }
         protected int previousDirection = -1;
 
