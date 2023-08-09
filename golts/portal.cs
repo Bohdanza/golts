@@ -35,6 +35,8 @@ namespace golts
         {
             if(Hitbox.CollidesWith(world.Hero.Hitbox, X, Y, world.Hero.X, world.Hero.Y))
                 world.ChangeRoom(RoomIndex, ExitPointIndex);
+
+            Texture.Update(contentManager);
         }
     }
 
