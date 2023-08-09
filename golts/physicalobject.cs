@@ -25,8 +25,9 @@ namespace golts
         public int CollisionLayer { get; protected set; }
 
         [JsonIgnore]
-        protected bool CollidedY = false, CollidedX = false;
-        
+        protected bool CollidedY = false, CollidedX = false; 
+        public List<PhysicalObject> collidedWith { get; private set; }
+
         [Newtonsoft.Json.JsonConstructor]
         public PhysicalObject() : base() { }
 
@@ -60,16 +61,19 @@ namespace golts
 
             CollidedY = false;
             CollidedX = false;
-
+            collidedWith = new List<PhysicalObject>();
+            
             Y += MovementY;
-
+            
             world.objects.UpdateObjectPosition(this, px, py);
 
             if (Math.Abs(py - Y) > HitPresicion)
             {
                 HashSet<PhysicalObject> relatedObjects = world.objects.GetNearbyObjects(this, CollisionLayer);
-
-                if(Obstructed(relatedObjects))
+                
+                updateCollidedList(relatedObjects);
+                
+                if (Obstructed(relatedObjects))
                 {
                     CollidedY = true;
                     PrevFallingSpeed = StandartFallingSpeed;
@@ -103,6 +107,8 @@ namespace golts
             {
                 HashSet<PhysicalObject> relatedObjects = world.objects.GetNearbyObjects(this, CollisionLayer);
 
+                updateCollidedList(relatedObjects);
+
                 if (Obstructed(relatedObjects))
                 {
                     CollidedX = true;
@@ -134,7 +140,7 @@ namespace golts
 
             Texture.Update(contentManager);
         }
-        
+
         private bool Obstructed(HashSet<PhysicalObject> relatedObjects)
         {
             foreach (var currentObject in relatedObjects)
@@ -144,6 +150,20 @@ namespace golts
                 }
 
             return false;
+        }
+
+        private void updateCollidedList(HashSet<PhysicalObject> relatedObjects)
+        {
+            foreach (var currentObject in relatedObjects)
+                if (currentObject != this && Hitbox.CollidesWith(currentObject.Hitbox, X, Y, currentObject.X, currentObject.Y))
+                {
+                    collidedWith.Add(currentObject);
+                }
+        }
+
+        public void getHit()
+        {
+            //Throw some particles
         }
     }
 }

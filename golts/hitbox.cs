@@ -147,5 +147,21 @@ namespace golts
                     null, color, (float)rot, new Vector2(0, 0), new Vector2((float)scale, 2), SpriteEffects.None, depth);
             }
         }
+
+        public Tuple<double, double> geomCenter()
+        {
+            double avX = 0, avY = 0;
+
+            foreach(Tuple<double, double> point in HitboxPoints)
+            {
+                avX += point.Item1;
+                avY += point.Item2;
+            }
+            
+            avX = avX / HitboxPoints.Count;
+            avY = avY / HitboxPoints.Count;
+
+            return new Tuple<double, double>(avX, avY);
+        }
     }
 }

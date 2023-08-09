@@ -15,6 +15,7 @@ using System.Diagnostics.CodeAnalysis;
  * Collision layers:
  * 0 - main layer (Hero, monsters, obstacles)
  * 1 - portals
+ * 2 - borders
  * 
  */
 

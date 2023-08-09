@@ -16,13 +16,14 @@ namespace golts
     {
         public int HP { get; protected set; }
         public int MaxHP { get; protected set; }
+        public bool isKilled = false;
 
         public string Action { get; protected set; }
         protected string previousAction = "";
- 
+
         public int Direction { get; protected set; }
         protected int previousDirection = -1;
-
+        
         [JsonProperty]
         protected string standTextureName { get; init; }
 
@@ -55,6 +56,10 @@ namespace golts
 
         public override void Update(ContentManager contentManager, World world)
         {
+            if (isKilled)
+            {
+                world.objects.DeleteObject(this);
+            }
             if (MovementX > 0)
                 Direction = 0;
             else if (MovementX < 0)
@@ -78,6 +83,41 @@ namespace golts
                 spriteEffects = SpriteEffects.FlipHorizontally;
 
             base.Draw(xAbsolute, yAbsolute, xCamera, yCamera, spriteBatch, depth, scale, color, spriteEffects);
+        }
+
+        public void getHit(int damage)
+        {
+            if (HP <= 0)
+            {
+                isKilled = true;
+                return;
+            }
+
+            base.getHit();
+        }
+        
+        public void getHit(int damage, PhysicalObject source, int power)
+        {
+            HP -= damage;
+            
+            if(HP <= 0)
+            {
+                isKilled = true;
+                return;
+            }
+            else
+            {
+                Tuple<double, double> sourceCenter = source.Hitbox.geomCenter();
+                Tuple<double, double> ownCenter = Hitbox.geomCenter();
+
+                sourceCenter = new Tuple<double, double>(sourceCenter.Item1 + source.X, sourceCenter.Item2 + source.Y);
+                ownCenter = new Tuple<double, double>(ownCenter.Item1 + X, ownCenter.Item2 + Y);
+
+                Tuple<double, double> a = Game1.DirectionToTuple((float)Game1.GetDirection(sourceCenter, ownCenter));
+            
+                ChangeMovement(-power*a.Item1, -power*a.Item2*2);
+                base.getHit();
+            }
         }
     }
 }
