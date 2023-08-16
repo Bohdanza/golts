@@ -16,6 +16,8 @@ namespace golts
     {
         [JsonProperty]
         public double StandartFallingSpeed { get; protected set; } = 3;
+        [JsonProperty]
+        public double CurrentFallingSpeed { get; protected set; }
 
         [JsonProperty]
         public bool GravityAffected { get; protected set; }
@@ -56,13 +58,18 @@ namespace golts
             Weight = weight;
             GravityAffected = gravityAffected;
 
+            CurrentFallingSpeed = StandartFallingSpeed;
+
             Texture = new DynamicTexture(contentManager, textureName);
         }
 
         public virtual void Update(ContentManager contentManager, World world)
         {
             if (GravityAffected)
-                MovementY += StandartFallingSpeed;
+            {
+                Y += CurrentFallingSpeed;
+                CurrentFallingSpeed += StandartFallingSpeed;
+            }
 
             X += MovementX;
             Y += MovementY;

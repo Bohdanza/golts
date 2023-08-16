@@ -18,11 +18,8 @@ namespace golts
         private bool inJump = false;
         [JsonProperty]
         private long timeSinceJump = 0;//actual time in GAME TICKS since last jump started
-        private const int acceptabelDifference = 40;//acceptable difference  between jumps
         [JsonProperty]
-        private int maxJumpingTime = 10; //maximum time after leaving the land during which a jump can be performed
-        
-        private const double actualStandartFallingSpeed= 5;
+        private int maxJumpingTime = 12; //maximum time after leaving the land during which a jump can be performe
 
         [JsonConstructor]
         public Hero() { }
@@ -30,7 +27,7 @@ namespace golts
         public Hero(ContentManager contentManager, double x, double y, double movementX, double movementY)
             : base(contentManager, x, y, movementX, movementY, 5, true, "hero", @"boxes\hero", 5, 5, "id")
         {
-            StandartFallingSpeed = actualStandartFallingSpeed;
+            StandartFallingSpeed = 0.6;
         }
 
         public override void Update(ContentManager contentManager, World world)
@@ -38,6 +35,11 @@ namespace golts
             var ks = Keyboard.GetState();
 
             timeSinceJump++;
+
+            if (inJump && CollidedY && StandartFallingSpeed == CurrentFallingSpeed)
+            {
+                inJump = false;
+            }
 
             if (ks.IsKeyDown(Keys.Z) && ((timeSinceJump < maxJumpingTime && !CollidedY && inJump) || (!inJump && CollidedY)))
             {
@@ -47,18 +49,7 @@ namespace golts
                     timeSinceJump = 0;
                 }
 
-                StandartFallingSpeed = 0.1;
-                
                 ChangeMovement(0, -40);
-            }
-            else
-            {
-                StandartFallingSpeed = actualStandartFallingSpeed;
-            }
-
-            if (inJump && CollidedY && StandartFallingSpeed==actualStandartFallingSpeed)
-            {
-                inJump = false;
             }
 
             if (ks.IsKeyDown(Keys.Left))

@@ -55,13 +55,16 @@ namespace golts
             double px = X;
             double py = Y;
 
-            if (GravityAffected)
-                MovementY += StandartFallingSpeed;
-
             CollidedY = false;
             CollidedX = false;
             collidedWith = new List<PhysicalObject>();
             
+            if (GravityAffected)
+            {
+                Y += CurrentFallingSpeed;
+                CurrentFallingSpeed += StandartFallingSpeed;
+            }
+
             Y += MovementY;
             
             world.objects.UpdateObjectPosition(this, px, py);
@@ -94,6 +97,7 @@ namespace golts
                         Y = l;
 
                     MovementY = StandartFallingSpeed;
+                    CurrentFallingSpeed = StandartFallingSpeed;
                 }
             }
 
