@@ -14,9 +14,8 @@ namespace golts
 {
     public abstract class WorldObject
     {
-        [JsonIgnore]
-        protected double PrevFallingSpeed = 3;
-        public const double StandartFallingSpeed = 3;
+        [JsonProperty]
+        public double StandartFallingSpeed { get; protected set; } = 3;
 
         [JsonProperty]
         public bool GravityAffected { get; protected set; }
@@ -63,9 +62,7 @@ namespace golts
         public virtual void Update(ContentManager contentManager, World world)
         {
             if (GravityAffected)
-                MovementY += PrevFallingSpeed;
-
-            PrevFallingSpeed *= StandartFallingSpeed;
+                MovementY += StandartFallingSpeed;
 
             X += MovementX;
             Y += MovementY;

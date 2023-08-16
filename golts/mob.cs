@@ -14,9 +14,13 @@ namespace golts
 {
     public abstract class Mob:PhysicalObject
     {
+        [JsonProperty]
         public int HP { get; protected set; }
+
+        [JsonProperty]
         public int MaxHP { get; protected set; }
-        public bool isKilled = false;
+        [JsonProperty]
+        public bool Killed = false;
 
         public string Action { get; protected set; }
         protected string previousAction = "";
@@ -56,7 +60,7 @@ namespace golts
 
         public override void Update(ContentManager contentManager, World world)
         {
-            if (isKilled)
+            if (Killed)
             {
                 world.objects.DeleteObject(this);
             }
@@ -85,24 +89,24 @@ namespace golts
             base.Draw(xAbsolute, yAbsolute, xCamera, yCamera, spriteBatch, depth, scale, color, spriteEffects);
         }
 
-        public void getHit(int damage)
+        public void GetHit(int damage)
         {
             if (HP <= 0)
             {
-                isKilled = true;
+                Killed = true;
                 return;
             }
 
-            base.getHit();
+            base.GetHit();
         }
         
-        public void getHit(int damage, PhysicalObject source, int power)
+        public void GetHit(int damage, PhysicalObject source, int power)
         {
             HP -= damage;
             
             if(HP <= 0)
             {
-                isKilled = true;
+                Killed = true;
                 return;
             }
             else
@@ -116,7 +120,7 @@ namespace golts
                 Tuple<double, double> a = Game1.DirectionToTuple((float)Game1.GetDirection(sourceCenter, ownCenter));
             
                 ChangeMovement(-power*a.Item1, -power*a.Item2*2);
-                base.getHit();
+                base.GetHit();
             }
         }
     }

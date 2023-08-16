@@ -25,7 +25,8 @@ namespace golts
         public int CollisionLayer { get; protected set; }
 
         [JsonIgnore]
-        protected bool CollidedY = false, CollidedX = false; 
+        protected bool CollidedY = false, CollidedX = false;
+        [JsonIgnore]
         public List<PhysicalObject> collidedWith { get; private set; }
 
         [Newtonsoft.Json.JsonConstructor]
@@ -55,9 +56,7 @@ namespace golts
             double py = Y;
 
             if (GravityAffected)
-            {
                 MovementY += StandartFallingSpeed;
-            }
 
             CollidedY = false;
             CollidedX = false;
@@ -76,7 +75,6 @@ namespace golts
                 if (Obstructed(relatedObjects))
                 {
                     CollidedY = true;
-                    PrevFallingSpeed = StandartFallingSpeed;
                     double l = py, r = Y;
 
                     while(Math.Abs(l-r)>HitPresicion)
@@ -161,7 +159,7 @@ namespace golts
                 }
         }
 
-        public void getHit()
+        public void GetHit()
         {
             //Throw some particles
         }

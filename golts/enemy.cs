@@ -13,6 +13,7 @@ namespace golts
         [JsonProperty]
         private bool isGoingRight = false;
         private PhysicalObject lastBorder;
+
         public Enemy(ContentManager contentManager, double x, double y, double movementX, double movementY, int weight,
             string textureName, string hitboxPath,
             int hP, int maxHP, string action) : base(contentManager, x, y, movementX, movementY, weight,
@@ -48,8 +49,8 @@ namespace golts
 
             if (nearbyObjcts.Contains(hero) && (collidedWith.Contains(hero) || hero.collidedWith.Contains(this)))
                 {
-                    getHit(0, hero, 100);
-                    hero.getHit(0, this, 100);
+                    GetHit(0, hero, 100);
+                    hero.GetHit(0, this, 100);
                 }
             base.Update(contentManager, world);
             

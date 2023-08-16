@@ -10,6 +10,7 @@ namespace golts
         public static Texture2D NoTexture;
         public static Texture2D OnePixel;
         public static float StandardScale = 4f;
+        public static SpriteFont debugFont;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -39,7 +40,7 @@ namespace golts
 
         protected override void Initialize()
         {
-            world = new World(Content, "saves\\1", true);
+            world = new World(Content, "saves\\1", false);
             base.Initialize();
         }
 
@@ -49,6 +50,7 @@ namespace golts
 
             NoTexture = Content.Load<Texture2D>("missingtexture");
             OnePixel = Content.Load<Texture2D>("onepixel");
+            debugFont = Content.Load<SpriteFont>("debugfont");
         }
 
         protected override void Update(GameTime gameTime)
