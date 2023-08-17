@@ -60,10 +60,7 @@ namespace golts
             collidedWith = new List<PhysicalObject>();
             
             if (GravityAffected)
-            {
-                Y += CurrentFallingSpeed;
-                CurrentFallingSpeed += StandartFallingSpeed;
-            }
+                MovementY += StandartFallingSpeed;
 
             Y += MovementY;
             
@@ -96,8 +93,7 @@ namespace golts
                     if (Obstructed(relatedObjects))
                         Y = l;
 
-                    MovementY = StandartFallingSpeed;
-                    CurrentFallingSpeed = StandartFallingSpeed;
+                    MovementY = 0;
                 }
             }
 
@@ -138,7 +134,10 @@ namespace golts
 
             world.objects.UpdateObjectPosition(this, px, py);
 
-            ChangeMovement(-MovementX, -MovementY);
+            if (!GravityAffected)
+                ChangeMovement(-MovementX, -MovementY);
+            else
+                ChangeMovement(-MovementX, 0);
 
             Texture.Update(contentManager);
         }

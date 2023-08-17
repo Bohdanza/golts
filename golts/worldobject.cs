@@ -66,10 +66,7 @@ namespace golts
         public virtual void Update(ContentManager contentManager, World world)
         {
             if (GravityAffected)
-            {
-                Y += CurrentFallingSpeed;
-                CurrentFallingSpeed += StandartFallingSpeed;
-            }
+                MovementY += StandartFallingSpeed;
 
             X += MovementX;
             Y += MovementY;
