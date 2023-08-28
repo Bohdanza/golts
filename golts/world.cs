@@ -54,8 +54,12 @@ namespace golts
 
                 //TODO: add copying world from standard world temp
                 objects.AddObject(new TestClass(contentManager, 800, 800));
+                objects.AddObject(new Obstacle(contentManager, 1100, 500, "testing1", @"boxes\wall1", true));
+                objects.AddObject(new Obstacle(contentManager, 800, 500, "testing1", @"boxes\wall1", true));
 
-                Hero = new Hero(contentManager, 800, 300, 0, 0);
+
+
+                Hero = new Hero(contentManager, 1000, 300, 0, 0);
                 objects.AddObject(Hero);
             }
             else
@@ -66,7 +70,7 @@ namespace golts
                         Hero = (Hero)currentObject;
             }
 
-            WorldCamera = new Camera(contentManager, Hero.X, Hero.Y, 0, 0, 10);
+            WorldCamera = new Camera(contentManager, Hero.X, Hero.Y, 0, 0, 1);
         }
 
         public void Update(ContentManager contentManager)

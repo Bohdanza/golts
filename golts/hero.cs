@@ -24,18 +24,24 @@ namespace golts
         [JsonProperty]
         public bool ObtainedDJ { get; protected set; } = false; //DJ = double jump
         [JsonProperty]
+        public bool ObtainedWJ {get; protected set;} = false; 
+        
+        [JsonProperty]
         public int MaxJumpsAmount { get; private set;}  = 1;
         
         private int currentJumpsCount = 0;
         private bool allowedToDoAdditionalJump = false;
-        private bool ZReleased = false;
-    public Hero() { }
+        
+        public bool clinged { get; protected set; } = false;
+
+        public Hero() { }
 
         public Hero(ContentManager contentManager, double x, double y, double movementX, double movementY)
             : base(contentManager, x, y, movementX, movementY, 5, true, "hero", @"boxes\hero", 5, 5, "id")
         {
             StandartFallingSpeed = 1;
             ObtainDJ();
+            ObtainedWJ = true;
         }
 
         public override void Update(ContentManager contentManager, World world)
@@ -44,49 +50,72 @@ namespace golts
 
             timeSinceJump++;
 
-            if (inJump && CollidedY && timeSinceJump>maxJumpingTime)
+            if (ks.IsKeyDown(Keys.Left) && (!clinged || clinged && Direction == 0))
+            {
+                ChangeMovement(-8.5, 0);
+                clinged = false;
+                GravityAffected = true;
+            }
+
+            if (ks.IsKeyDown(Keys.Right) && (!clinged || clinged && Direction == 1))
+            {
+                ChangeMovement(8.5, 0);
+                clinged = false;
+                GravityAffected = true;
+            }
+
+            if (ObtainedWJ && !clinged)
+            {
+                foreach (var collidedObject in collidedWith)
+                {
+                    if (collidedObject is Obstacle && collidedObject.IsClingable)
+                    {
+                        clinged = true;
+                        GravityAffected = false;
+                        MovementY = 0;
+                        CollidedY = true;
+                    }
+                }
+            }
+
+            if (clinged)
+                CollidedY = true;
+
+            if (inJump && CollidedY && timeSinceJump > maxJumpingTime)
             {
                 inJump = false;
                 currentJumpsCount = 0;
                 allowedToDoAdditionalJump = false;
             }
-
-            if (ks.IsKeyDown(Keys.Z) && ((timeSinceJump < maxJumpingTime && !CollidedY && inJump ) || (!inJump && CollidedY) || (allowedToDoAdditionalJump)))
+            bool a = ks.IsKeyDown(Keys.Z);
+            if (a && ((timeSinceJump < maxJumpingTime && !CollidedY && inJump) 
+                || (!inJump && CollidedY) || allowedToDoAdditionalJump || clinged) )
             {
-                
-                if (!inJump)
+
+                if (!inJump || clinged) //first jump
                 {
                     currentJumpsCount++;
                     inJump = true;
-                    ZReleased = false;
                     timeSinceJump = 0;
+                    GravityAffected = true;
+                    clinged = false;
                 }
-                
-                if(allowedToDoAdditionalJump)
+                else if (allowedToDoAdditionalJump)
                 {
                     currentJumpsCount++;
-                    ZReleased = false;
                     timeSinceJump = 0;
                     allowedToDoAdditionalJump = false;
                     MovementY = 0;
+                    GravityAffected = true;
                 }
-                
+
                 ChangeMovement(0, -35);
             }
-            
-            if (ObtainedDJ && !CollidedY && ks.IsKeyUp(Keys.Z))
+
+            if (ObtainedDJ && !CollidedY && (currentJumpsCount < MaxJumpsAmount) && ks.IsKeyUp(Keys.Z))
             {
-                if (currentJumpsCount < MaxJumpsAmount)
-                {
-                    allowedToDoAdditionalJump = true;
-                }
+                allowedToDoAdditionalJump = true;
             }
-
-            if (ks.IsKeyDown(Keys.Left))
-                ChangeMovement(-8.5, 0);
-
-            if (ks.IsKeyDown(Keys.Right))
-                ChangeMovement(8.5, 0);
 
             if (ks.IsKeyDown(Keys.C))
                 world.objects.AddObject(new Obstacle(contentManager, X, Y, "hero_id_", new List<Tuple<double, double>>()));
@@ -111,5 +140,14 @@ namespace golts
             MaxJumpsAmount = 2;
         }
 
+        public void ObtainPen()
+        {
+            StandartFallingSpeed = 0.75d;
+        }
+
+        public void ObtainAddW()
+        {
+            StandartFallingSpeed = 1.25d;
+        }
     }
 }

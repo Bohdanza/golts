@@ -24,30 +24,35 @@ namespace golts
         [JsonProperty]
         public int CollisionLayer { get; protected set; }
 
+        [JsonProperty]
+        public bool IsClingable { get; protected set; }
+
         [JsonIgnore]
         protected bool CollidedY = false, CollidedX = false;
         [JsonIgnore]
-        public List<PhysicalObject> collidedWith { get; private set; }
+        public List<PhysicalObject> collidedWith { get; private set; } = new List<PhysicalObject>();
 
         [Newtonsoft.Json.JsonConstructor]
         public PhysicalObject() : base() { }
 
         public PhysicalObject(ContentManager contentManager,
             double x, double y, double movementx, double movementy, double weight, bool gravityAffected,
-            string textureName, string hitboxPath, int collisionLayer = 0) :
+            string textureName, string hitboxPath, int collisionLayer = 0, bool isClingable = false) :
             base(contentManager, x, y, movementx, movementy, weight, gravityAffected, textureName)
         {
             Hitbox = new ObjectHitbox(hitboxPath);
             CollisionLayer = collisionLayer;
+            IsClingable = isClingable;
         }
 
         public PhysicalObject(ContentManager contentManager, 
             double x, double y, double movementx, double movementy, double weight, bool gravityAffected,
-            string textureName, List<Tuple<double, double>> hitbox, int collisionLayer = 0) :
+            string textureName, List<Tuple<double, double>> hitbox, int collisionLayer = 0, bool isClingable = false) :
             base(contentManager, x, y, movementx, movementy, weight, gravityAffected, textureName)
         {
             Hitbox = new ObjectHitbox(hitbox);
             CollisionLayer = collisionLayer;
+            IsClingable = isClingable;
         }
 
         public override void Update(ContentManager contentManager, World world)
