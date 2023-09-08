@@ -16,7 +16,7 @@ namespace golts
 {
     public class Camera : WorldObject
     {
-        public const double MaxMovementSpeed = 10;
+        public const double MaxMovementSpeed = 20;
 
         public Camera(ContentManager contentManager, double x, double y, double movementx, double movementy, double weight)
             : base(contentManager, x, y, movementx, movementy, weight, false, "") { }
